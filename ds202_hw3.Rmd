@@ -1,0 +1,146 @@
+---
+title: "ds202_hw3"
+author: "Anyesha Ray Github: anyeshar"
+date: "February 16, 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+#install.packages('reshape2')
+library(reshape2)
+library(ggplot2)
+
+
+data(tips, package="reshape2")
+#?tips
+```
+
+
+#How many parties did the waiter serve? Store the number in numParty and print.
+```{r}
+numParty=nrow(tips)
+numParty
+```
+The waiter served 244 parties. We can also just open the data set and look at number of rows. 
+
+
+#What are the types of variables in the data frame tips? Include the code and also explain verbally.
+```{r}
+type_total_bill=class(tips$total_bill)
+cat("total_bill is a", type_total_bill, "variable." )
+type_tip=class(tips$tip)
+cat("tip is a", type_total_bill, "variable." )
+type_sex=class(tips$sex)
+cat("sex is a", type_total_bill, "variable." )
+type_smoker=class(tips$smoker)
+cat("smoker is a", type_total_bill, "variable." )
+type_day=class(tips$day)
+cat("day is a", type_total_bill, "variable." )
+type_time=class(tips$time)
+cat("time is a", type_total_bill, "variable." )
+type_time=class(tips$size)
+cat("size is an", type_total_bill, "variable." )
+
+```
+
+#Create a vector named day containing the day of visits in tips. The factor levels should be ordered from Thursday to Sunday. Print the variable.
+
+```{r}
+day= tips$day
+day = factor(day, levels(day)[c(4, 1:3)])
+levels(day)
+tips$day= day
+day
+```
+
+
+
+#Create a data frame named female5 containing the meal paid by a female payer in a party with size greater than or euqal to 5. Print the data frame.
+```{r}
+female5=tips[tips$sex == 'Female' & tips$size >= 5,]
+print(female5)
+```
+
+
+#How does the tipping amount (tip) depend on the overall bill (total_bill)? Use the ggplot2 package to make a chart. Describe the relationship in words.
+```{r}
+ggplot(data = tips, aes(x = tips$total_bill, y = tips$tip)) +geom_point()
+```
+
+There seems to be a positive linear relationship between tipping amount and overall bill. As the bil amount increases so does amount tipped. 
+
+
+#Describe at least two types of anomalies in the previous plot. What do they mean?
+There are a few outliers in the scatterplot from above. One is the point (7,5.1) and the other is (33,1). In the first point someone is tipping more than usual based on how much their total bill was and in the second one someone is leaving a smaller tip for a larger total bill.
+
+#Introduce a variable tiprate into the data set which stands for the rate of tips. What is the average rate for tips? Explain verbally.
+```{r}
+tips$tip_rate = tips$tip / tips$total_bill
+mean(tips$tip_rate)
+```
+#Make a boxplot of the tip rate by time. The x-axis should be ordered by lunch and then dinner. Use ggplot2 to make a chart. Verbally explain the chart.
+```{r}
+tips$time = factor(tips$time, levels(tips$time)[c(2,1)])
+ggplot(tips, aes(x=time, y=tip_rate)) + geom_boxplot() + labs(x="Time", y="Tip Rate", title="Time vs Tip Rate")
+```
+It seems as though there is not much of a change in tipping rate for lunch and dinner. However, during the dinner time, there are a few outliers in tipping rate where customers pay significantly more than the average or median tipping rates. 
+
+
+#How does smoking behavior and gender of the person who pays impact the relationship between tip and total bill? Find a visualization that incorporates all four variables. Interpret the result.
+```{r}
+tips$smoker_sex = interaction(tips$smoker, tips$sex)
+ggplot(tips, aes(x=smoker_sex, y = tip_rate)) + geom_boxplot() 
+
+```
+Based on the boxplot it seems that smoking males have a lower tipping rate than females or males who do not smoke. Females who smoke seem to have the highest average tipping rate. 
+
+
+
+
+#Use ggplot2 to find a graphical summary of the relationship between day of the week and gender of the person paying the bill. What can you say about this relationship?
+```{r}
+ggplot(tips, aes(fill=sex, y=1,x=day)) + geom_bar(position="fill", stat="identity") + labs(title="Sex vs Day of the Week",y="Percentage", x="Day of the Week", fill="Sex")
+
+```
+It seems every day of the week listed has a higher percentage of males than females. Sunday is the day where more males go to the restaurant than females. Only Thursday seems to have an equal percentage of male and females. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
